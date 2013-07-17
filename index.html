@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='utf-8'> 
+<link type="text/css" rel="stylesheet" href="style.css"></link>
+<script type="text/javascript" src="bower_components\underscore\underscore-min.js"></script>
+<script type="text/javascript" src="bower_components\jquery\jquery.min.js"></script>
+<script type="text/javascript" src="bower_components\knockout\knockout-2.3.0.debug.js"></script>
+<script>
+    window.define = function(factory) {
+        try{ delete window.define; } catch(e){ window.define = void 0; } // IE
+        window.w = factory();
+    };
+    window.define.amd = {};
+</script>
+<script type="text/javascript" src="bower_components\when\when.js"></script>
+</head>
+<body onkeydown="keyDown(event)">
+	<div class="left strip memory" >
+	</div>
+	<div class="left strip bitstack" data-bind="with: bitStack">
+		<div data-bind="foreach: items" >
+			<!--<div data-bind="html: bit" />-->
+			<div class="bit" data-bind="css: value" />
+	 </div>
+	</div>	
+	<div class="center instructions">				
+		<div class="stack" data-bind="with: callstack">
+			<div data-bind="foreach: frames">
+				<div class="frame" data-bind="css: { editing : $parent.isEditing($data.program) }, attr: { level: $parent.indexOf($data) }" >
+					<span class="name" data-bind="text: $data.program.name, click: $data.program.rename"></span>
+					<span class="changed" data-bind="visible: $data.program.changed">*</span>
+					<div data-bind="foreach: $data.program.ops">
+						<div class="instruction" data-bind="attr:{index:addr},css:type">
+							<div class="ctx">
+								<p class="addr" data-bind="text:displayAddr"></p>
+								<div class="label">
+									<span class="type" data-bind="text:type"></span>
+									<span class="param" data-bind="text:display"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="right functions" data-bind="with: fu.progs" >
+		<div data-bind="foreach: $data">
+			<div class="fu" data-bind="attr:{index:addr}, click: $root.callstack.switchProgram">
+					<span data-bind="text: displayAddr"></span>
+					<span data-bind="text: name"></span>
+					<span class="delete" data-bind="click: $root.fu.delProgram">✖</span>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="script.js"></script>
+</body>
+</html>

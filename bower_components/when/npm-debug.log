@@ -1,0 +1,34 @@
+13483 http 200 https://registry.npmjs.org/buffers/0.1.1
+13484 silly registry.get cb [ 200,
+13484 silly registry.get   { vary: 'Accept',
+13484 silly registry.get     server: 'CouchDB/1.3.0 (Erlang OTP/R15B03)',
+13484 silly registry.get     etag: '"7Y5O1GVVJAKW01XA3NQBMQIQZ"',
+13484 silly registry.get     date: 'Sun, 14 Jul 2013 18:39:55 GMT',
+13484 silly registry.get     'content-type': 'application/json',
+13484 silly registry.get     'content-length': '876' } ]
+13485 silly lockFile 7d061e50-js-org-buffers-buffers-0-1-1-tgz https://registry.npmjs.org/buffers/-/buffers-0.1.1.tgz
+13486 verbose lock https://registry.npmjs.org/buffers/-/buffers-0.1.1.tgz C:\Users\simonl\AppData\Roaming\npm-cache\7d061e50-js-org-buffers-buffers-0-1-1-tgz.lock
+13487 verbose addRemoteTarball [ 'https://registry.npmjs.org/buffers/-/buffers-0.1.1.tgz',
+13487 verbose addRemoteTarball   'b24579c3bed4d6d396aeee6d9a8ae7f5482ab7bb' ]
+13488 info retry fetch attempt 1 at 20:39:55
+13489 verbose fetch to= C:\Users\simonl\AppData\Local\Temp\npm-1056\1373827195439-0.7775375507771969\tmp.tgz
+13490 http GET https://registry.npmjs.org/buffers/-/buffers-0.1.1.tgz
+13491 error Error: ENOENT, lstat 'C:\Users\simonl\AppData\Local\Temp\npm-1056\1373827188255-0.5871413296554238\package\test\esprima.js.html'
+13492 error If you need help, you may report this log at:
+13492 error     <http://github.com/isaacs/npm/issues>
+13492 error or email it to:
+13492 error     <npm-@googlegroups.com>
+13493 error System Windows_NT 6.1.7601
+13494 error command "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install"
+13495 error cwd C:\Users\simonl\Downloads\computer game\bower_components\when
+13496 error node -v v0.10.13
+13497 error npm -v 1.3.2
+13498 error path C:\Users\simonl\AppData\Local\Temp\npm-1056\1373827188255-0.5871413296554238\package\test\esprima.js.html
+13499 error fstream_path C:\Users\simonl\AppData\Local\Temp\npm-1056\1373827188255-0.5871413296554238\package\test\esprima.js.html
+13500 error fstream_type File
+13501 error fstream_class FileWriter
+13502 error code ENOENT
+13503 error errno 34
+13504 error fstream_stack C:\Program Files\nodejs\node_modules\npm\node_modules\fstream\lib\writer.js:284:26
+13504 error fstream_stack Object.oncomplete (fs.js:107:15)
+13505 verbose exit [ 34, true ]
