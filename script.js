@@ -451,6 +451,7 @@
       this.removeOp = __bind(this.removeOp, this);
       this.rename = __bind(this.rename, this);
       this.addr = ko.observable(this.addr);
+      this.writeProtected = ko.observable(false);
       this.displayAddr = ko.computed(function() {
         return toHex(this.addr());
       }, this);
@@ -463,9 +464,11 @@
         this.pushOp(op);
       }
       this.addOp(new EOP());
-      this.changed = ko.observable(false);
-      this.changed.subscribe(function(ch) {
-        if (ch) {
+      this.changed = ko.observable(false).extend({
+        notify: 'always'
+      });
+      this.changed.subscribe(function() {
+        if (_this.changed() && (_this.latestOp() != null)) {
           _this.save();
           return root.save();
         }
@@ -617,14 +620,13 @@
 
   FuBar = (function() {
     function FuBar(savedProgs) {
-      var prog, _i, _len, _ref;
-      this.savedProgs = savedProgs;
       this.delProgram = __bind(this.delProgram, this);
+      var prog, _i, _len, _ref;
       this.progs = ko.observableArray();
-      this.progs.equalityCompar = function(a, b) {
+      this.progs.equalityComparer = function(a, b) {
         return a.addr() === b.addr();
       };
-      _ref = ko.utils.unwrapObservable(this.savedProgs || []);
+      _ref = ko.utils.unwrapObservable(savedProgs || []);
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         prog = _ref[_i];
         this.addProg(new Program(prog.addr, prog.name, prog.ops));
@@ -644,6 +646,11 @@
 
     FuBar.prototype.isSaved = function(prog) {
       return this.progs.indexOf(prog) > -1;
+    };
+
+    FuBar.prototype.love = function(prog) {
+      console.log(prog);
+      return prog.writeProtected(true);
     };
 
     FuBar.prototype.newProgram = function(name) {
@@ -668,7 +675,8 @@
     };
 
     FuBar.prototype._delProgram = function(prog) {
-      return this.progs.remove(prog);
+      this.progs.remove(prog);
+      return root.save();
     };
 
     FuBar.prototype.getFirstAddr = function() {
@@ -733,6 +741,7 @@
           while (firstFrame.pos !== eopAddr) {
             root.callstack.step();
           }
+          root.callstack.step();
         }
         root.activeCursor.commit = null;
         root.activeCursor = root.head;
@@ -985,12 +994,11 @@
       }
     }
     if (e.which === 27) {
-      localStorage["fu"] = '';
       window.location.reload();
     }
     if (e.which === 78) {
       prog = root.fu.newProgram();
-      root.callstack.switchProgram(prog);
+      root.callstack.switchProgram(prog, true);
     }
     if (e.which > 48 && e.which < 58) {
       prog = root.fu.progs()[e.which - 49];

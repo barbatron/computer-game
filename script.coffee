@@ -228,6 +228,7 @@ class Pop extends Op
 class Program
   constructor: (@addr, @name, @savedOps) ->
     @addr = ko.observable(@addr)
+    @writeProtected = ko.observable(false)
     @displayAddr = ko.computed ->
         toHex @addr()
       , this
@@ -239,12 +240,11 @@ class Program
       @pushOp op
 
     @addOp(new EOP()) 
-    @changed = ko.observable(false)
-    @changed.subscribe (ch) => 
-      if ch
+    @changed = ko.observable(false).extend({ notify: 'always' })    
+    @changed.subscribe () => 
+      if @changed() and @latestOp()?
         @save()
         root.save() 
-
   hasAddr: (addr) ->
     opHasAddr = (op) -> 
       op.addr() is addr
@@ -259,7 +259,6 @@ class Program
     #@rename()
     root.fu.addProg(this)
     @changed(false)
-
   pushOp: (op) ->
     # Operation ADDR is based off of Program ADDR + pos 
     # in ops array. Computation is in the Program scope:
@@ -328,10 +327,10 @@ class CursorController
 
 
 class FuBar
-  constructor: (@savedProgs) ->
+  constructor: (savedProgs) ->
     @progs = ko.observableArray()        
-    @progs.equalityCompar = (a, b) -> a.addr() is b.addr()
-    for prog in ko.utils.unwrapObservable(@savedProgs || [])      
+    @progs.equalityComparer = (a, b) -> a.addr() is b.addr()
+    for prog in ko.utils.unwrapObservable(savedProgs || [])      
       @addProg(new Program(prog.addr, prog.name, prog.ops))
     
   nextAddress: () ->
@@ -341,6 +340,10 @@ class FuBar
 
   isSaved: (prog) ->
     return @progs.indexOf(prog) > -1
+
+  love: (prog) ->
+    console.log prog
+    prog.writeProtected(true)
 
   newProgram: (name = null) ->
     addr = @nextAddress()
@@ -356,6 +359,7 @@ class FuBar
   delProgram: (prog) => @_delProgram prog
   _delProgram: (prog) ->
     @progs.remove(prog)
+    root.save()
 
   # For implementing CursorController
   getFirstAddr: () -> @progs()[0].addr()
@@ -406,6 +410,7 @@ class FuBar
         eopAddr = firstFrame.program.latestAddr()
         while firstFrame.pos isnt eopAddr
           root.callstack.step()
+        root.callstack.step()
 
       root.activeCursor.commit = null
       root.activeCursor = root.head
@@ -563,14 +568,14 @@ root.keyDown = (e) ->
       root.callstack.switchProgram()
   
   if e.which is 27 # esc - clears all (for now)
-    localStorage["fu"] = ''
+    #localStorage["fu"] = ''
     window.location.reload()
   
   if e.which is 78 # n        
     prog = root.fu.newProgram()    
     #root.callstack.push prog.addr()
     #root.program(prog)  
-    root.callstack.switchProgram prog
+    root.callstack.switchProgram prog, true
 
   if e.which > 48 and e.which < 58 # 1-9
     prog = root.fu.progs()[e.which-49]

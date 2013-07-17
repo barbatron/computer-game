@@ -50,7 +50,8 @@
 			<div class="fu" data-bind="attr:{index:addr}, click: $root.callstack.switchProgram">
 					<span data-bind="text: displayAddr"></span>
 					<span data-bind="text: name"></span>
-					<span class="delete" data-bind="click: $root.fu.delProgram">✖</span>
+					<span class="love" data-bind="css: {wp:$data.writeProtected},click: $root.fu.love">❤</span>
+					<span class="delete" data-bind="css: {wp:$data.writeProtected},click: $root.fu.delProgram">✖</span>
 			</div>
 		</div>
 	</div>
